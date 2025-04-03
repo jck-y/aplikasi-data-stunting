@@ -1,5 +1,5 @@
 import React from 'react';
-import { Logo2 } from '../../assets';
+import { Logo2 } from '../../Assets';
 import Gap from '../../Components/Gap';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 const Splash = ({ navigation }) => {

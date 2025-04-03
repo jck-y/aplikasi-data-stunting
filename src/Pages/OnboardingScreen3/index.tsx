@@ -1,5 +1,5 @@
 import React from 'react';
-import { O3 } from '../../assets';
+import { O3 } from '../../Assets';
 import Gap from '../../Components/Gap';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
