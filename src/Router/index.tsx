@@ -1,6 +1,6 @@
 import {OnboardingScreen1, OnboardingScreen2, OnboardingScreen3, Splash, Login, Home, Statistik, Location} from '../Pages';
 import React from 'react';
-import { Image } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { home_nav, home_nonactive_nav, map_nav, map_nonactive_nav, statistik_nav, statistik_nonactive_nav } from '../Assets';
@@ -67,11 +67,21 @@ const TabNavigator = () => {
       right: 0,
       bottom: 0,
     },}}>
-      <Tab.Screen name="Home" component={Home} options={{tabBarIcon: ({focused}) => <Image source={focused ? home_nav : home_nonactive_nav} style={{height: 28, width: 36, resizeMode: "contain", marginTop: 14}} />}}/>
-      <Tab.Screen name="Location" component={Location} options={{tabBarIcon: ({focused}) => <Image source={focused ? map_nav : map_nonactive_nav} style={{height: 36, width: 36, resizeMode: "contain",marginTop: 14}} />}}/>
-      <Tab.Screen name="Statistik" component={Statistik} options={{tabBarIcon: ({focused}) => <Image source={focused ? statistik_nav : statistik_nonactive_nav } style={{height: 24, width: 40,marginTop: 14}} />}}/>
+      <Tab.Screen name="Home" component={Home} options={{tabBarIcon: ({focused}) => <View style={{ alignItems: "center" }}><Image source={focused ? home_nav : home_nonactive_nav} style={{height: 28, width: 36, resizeMode: "contain", marginTop: 14}} /> {focused && <View style={styles.dot} />} </View> }}/>
+      <Tab.Screen name="Location" component={Location} options={{tabBarIcon: ({focused}) => <View style={{ alignItems: "center" }}> <Image source={focused ? map_nav : map_nonactive_nav} style={{height: 36, width: 36, resizeMode: "contain",marginTop: 14}} />{focused && <View style={styles.dot} />} </View>}}/>
+      <Tab.Screen name="Statistik" component={Statistik} options={{tabBarIcon: ({focused}) => <View style={{ alignItems: "center" }}><Image source={focused ? statistik_nav : statistik_nonactive_nav } style={{height: 20, width: 36,marginTop: 14}} />{focused && <View style={styles.dot} />} </View>}}/>
     </Tab.Navigator>
   );
 }
 
 export default index;
+
+const styles = StyleSheet.create({
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#0077B6", // Warna titik aktif (bisa diubah)
+    marginTop: 4,
+  },
+});
