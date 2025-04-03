@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /* eslint-disable react/no-unstable-nested-components */
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -27,11 +28,11 @@ export default function BottomTabNavigator() {
           tabBarShowLabel: false,
           tabBarIcon: ({ focused }) => {
             let icon;
-            if (route.name === "Home") {
+            if (route.name === 'Home') {
               icon = focused ? home_nav : home_nonactive_nav;
             } else if (route.name === 'Location') {
               icon = focused ? map_nav : map_nonactive_nav;
-            } else if (route.name === "Statistik") {
+            } else if (route.name === 'Statistik') {
               icon = focused ? statistik_nav : statistik_nonactive_nav;
             }
 

@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+/* eslint-disable react-native/no-inline-styles */
 import React from "react";
 import { Image, View, Text, StyleSheet , TouchableOpacity } from "react-native";
 import { button_left, button_right, maximize } from "../../../Assets";
@@ -54,4 +56,4 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
-})
+});

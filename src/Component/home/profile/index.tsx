@@ -1,3 +1,7 @@
+/* eslint-disable eslint-comments/no-unused-disable */
+/* eslint-disable eslint-comments/no-unused-disable */
+/* eslint-disable quotes */
+/* eslint-disable eslint-comments/no-unused-disable */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { View, Image, StyleSheet } from "react-native";
@@ -32,6 +36,6 @@ const styles = StyleSheet.create({
       left: 40,
       top: -10,
       width: 10,
-        height: 10,
+    height: 10,
     },
 })

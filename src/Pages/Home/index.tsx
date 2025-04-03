@@ -1,11 +1,10 @@
 import React from 'react';
-import { Image, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Image, View, Text, StyleSheet } from 'react-native';
 import { home_top_background } from '../../Assets';
 import { Profile } from '../../Component';
-import { NavigationProp } from '@react-navigation/native';
 import { Mini_list_data } from '../../Component';
 
-const Home = ({ navigation }: { navigation: NavigationProp<any> }) => {
+const Home = () => {
   return (
     <View style={styles.container}>
       <Image style={styles.image} source={home_top_background}  />
@@ -13,12 +12,6 @@ const Home = ({ navigation }: { navigation: NavigationProp<any> }) => {
       <Text style={styles.welcomeText} > {`Selamat Datang 
 John Doe`}</Text>
       <Mini_list_data />
-      <TouchableOpacity onPress={() => navigation.navigate('Location')}>
-        <Text>Location</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Statistik')}>
-        <Text>Statistic</Text>
-      </TouchableOpacity>
     </View>
   );
 };
