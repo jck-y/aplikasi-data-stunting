@@ -10,6 +10,8 @@ import statistik_nav from './statistik_nav.png';
 import statistik_nonactive_nav from './statistik_nonactive_nav.png';
 import button_left from './button_left.png';
 import button_right from './button_right.png';
+import user_location from './user_location.png';
+import search_geolocation from './search_geolocation.png';
 
 export {
     active_profile,
@@ -24,4 +26,6 @@ export {
     statistik_nonactive_nav,
     button_left,
     button_right,
+    user_location,
+    search_geolocation,
 };
