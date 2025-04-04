@@ -11,6 +11,7 @@ const Stack = createNativeStackNavigator();
 const index = () => {
   return (
     <Stack.Navigator>
+
       <Stack.Screen
         name="OnboardingScreen1"
         component={OnboardingScreen1}
