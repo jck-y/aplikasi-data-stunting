@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "209864998830",
+    "project_id": "datastunting-5526f",
+    "storage_bucket": "datastunting-5526f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209864998830:android:dc333aea07114b6bc9123f",
+        "android_client_info": {
+          "package_name": "com.datastunting"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUkanuR84DudOXor4JI530yWm62HyKaLg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
