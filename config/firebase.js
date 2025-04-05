@@ -1,5 +1,8 @@
 import {initializeApp} from 'firebase/app';
 import {getApps} from 'firebase/app';
+import firebase from '@react-native-firebase/app';
+import database from '@react-native-firebase/database';
+import '@react-native-firebase/firestore';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDQ8rbe4Cz46Fbop9ugJ3IWMCNmVVIkHjA',
@@ -17,3 +20,5 @@ if (!getApps().length) {
   console.log('Firebase sudah terhubung.');
 }
 const app = initializeApp(firebaseConfig);
+
+export {database};
