@@ -6,4 +6,5 @@ import Login from "./Login";
 import Home from "./Home";
 import Statistik from "./Statistik";
 import Location from "./Location";
-export {OnboardingScreen1, OnboardingScreen2, OnboardingScreen3, Splash, Login, Home, Statistik, Location}; 
+import InputData from "./InputData";
+export {OnboardingScreen1, OnboardingScreen2, OnboardingScreen3, Splash, Login, Home, Statistik, Location, InputData}; 
