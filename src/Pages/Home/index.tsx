@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { home_top_background } from '../../Assets';
+import { ButtoninputData, home_top_background } from '../../Assets';
 import { Profile } from '../../Component';
 import { Mini_list_data } from '../../Component';
 
@@ -15,11 +15,11 @@ John Doe`}</Text>
 
       <View style={styles.containerbutton}>
       <TouchableOpacity
-        style={styles.button}
+        // style={styles.button}
         onPress={() => navigation.navigate('InputData')}
       >
-        
-        <Text style={styles.buttonText}>Input Data</Text>
+        <ButtoninputData />
+        {/* <Text style={styles.buttonText}>Input Data</Text> */}
       </TouchableOpacity>
     </View>
 

@@ -67,7 +67,7 @@ const Statistik = () => {
           chartConfig={{
           backgroundColor: "#0077B6",
           backgroundGradientFrom: "#0077B6",
-          backgroundGradientTo: "#ffa726",
+          backgroundGradientTo: "#2A9D8F",
           decimalPlaces: 0,
           color: (opacity = 1) => `white`,
           labelColor: (opacity = 1) => `white`,
