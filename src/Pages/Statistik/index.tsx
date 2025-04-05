@@ -1,7 +1,9 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {LineChart} from "react-native-chart-kit";
 
 const data = [
   { label: '7 Hari Terakhir', value: '7' },
@@ -44,6 +46,47 @@ const Statistik = () => {
         />
       </View>
       <Text style={styles.text2}>Jumlah Kasus Pada Daerah Ini</Text>
+      <LineChart
+          data={{
+          labels: ["Airmadidi", "Kalawat", "Dimembe", "Kauditan", "Kema", "Likupang"],
+          datasets: [
+              {
+              data: [
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100
+              ]
+              }
+          ]
+          }}
+          width={Dimensions.get("window").width - 20} // from react-native
+          height={260}
+          chartConfig={{
+          backgroundColor: "#0077B6",
+          backgroundGradientFrom: "#0077B6",
+          backgroundGradientTo: "#ffa726",
+          decimalPlaces: 0,
+          color: (opacity = 1) => `white`,
+          labelColor: (opacity = 1) => `white`,
+          propsForHorizontalLabels: {
+            fontSize: 10, // Reduce font size for horizontal labels
+            translateX: -10,
+        },propsForVerticalLabels: {
+          fontSize: 10, // Reduce font size for vertical labels
+          translateY: 5,
+      },
+          }}
+          bezier
+          style={{
+          marginVertical: 8,
+          borderRadius: 8,
+          alignSelf: 'center',
+          top: 20,
+          }}
+      />
       {/* Dropdown Waktu */}
       <View style={styles.container2}>
         <Dropdown
