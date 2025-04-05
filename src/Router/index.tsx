@@ -1,4 +1,4 @@
-import {OnboardingScreen1, OnboardingScreen2, OnboardingScreen3, Splash, Login, Home, Statistik, Location, InputData} from '../Pages';
+import {OnboardingScreen1, OnboardingScreen2, OnboardingScreen3, Splash, Login, Home, Statistik, Location, InputData, ListData} from '../Pages';
 import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -50,6 +50,11 @@ const index = () => {
       <Stack.Screen
         name="Location"
         component={Location}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ListData"
+        component={ListData}
         options={{headerShown: false}}
       />
       <Stack.Screen

@@ -1,12 +1,15 @@
 import React from 'react';
 import { Logo2 } from '../../Assets';
-import Gap from '../../Components/Gap';
+import Gap from '../../Component/Gap';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 const Splash = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Logo2/>
-      <Gap height={127} />
+      <Gap height={28} />
+      <Text style={styles.title}>Cegah Stunting</Text>
+      <Text style={styles.title}>Selamatkan Generasi</Text>
+      <Gap height={67} />
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>
         <View style={styles.buttonContainer}>
           <Text style={styles.textStyle}>Masuk</Text>
@@ -31,10 +34,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff', 
   },
   title: {
-    fontSize: 34,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#725d8d'
+    fontSize: 17,
+    fontWeight: '500',
+    color: '#0077B6',
   },
   buttonContainer: {
     backgroundColor: '#0077B6',

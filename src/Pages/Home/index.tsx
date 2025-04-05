@@ -11,7 +11,7 @@ const Home = ({ navigation }) => {
       <Profile />
       <Text style={styles.welcomeText} > {`Selamat Datang 
 John Doe`}</Text>
-      <Mini_list_data />
+      <Mini_list_data navigation={navigation}/>
 
       <View style={styles.containerbutton}>
       <TouchableOpacity

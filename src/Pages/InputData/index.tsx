@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { V, X } from '../../Assets';
-import { Gap } from '../../Components';
+import { Gap } from '../../Component';
 
 const InputData = () => {
   const [namaDepan, setNamaDepan] = useState('');

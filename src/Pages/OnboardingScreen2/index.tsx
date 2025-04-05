@@ -1,6 +1,6 @@
 import React from 'react';
 import { O2 } from '../../Assets';
-import Gap from '../../Components/Gap';
+import Gap from '../../Component/Gap';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 const OnboardingScreen2 = ({ navigation }) => {
