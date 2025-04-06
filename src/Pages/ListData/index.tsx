@@ -1,28 +1,45 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {fetchUserData} from '../../Api/showData';
 
-const dummyData = [
-  { id: '1', nama: 'Rhye, Olivia', tempatTinggal: 'Sukur, kec Airmadidi', tb: 178, bb: 56, umur: 18, jenisKelamin: 'L' },
-  { id: '2', nama: 'Soen, Albert Kuantino', tempatTinggal: 'Tetey, kec Dimembe', tb: 160, bb: 65, umur: 20, jenisKelamin: 'P' },
-];
+// const dummyData = [
+//   { id: '1', nama: 'Rhye, Olivia', tempatTinggal: 'Sukur, kec Airmadidi', tb: 178, bb: 56, umur: 18, jenisKelamin: 'L' },
+//   { id: '2', nama: 'Soen, Albert Kuantino', tempatTinggal: 'Tetey, kec Dimembe', tb: 160, bb: 65, umur: 20, jenisKelamin: 'P' },
+// ];
 
-const ITEMS_PER_PAGE = 2; // Jumlah item per halaman
+const ITEMS_PER_PAGE = 15; // Jumlah item per halaman
 
-const ListData = ({ navigation }) => {
+const ListData = ({navigation}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [userData, setUserData] = useState([]);
 
-  const filteredData = dummyData.filter(item => {
+  useEffect(() => {
+    const loadData = async () => {
+      const data = await fetchUserData();
+      setUserData(data);
+    };
+    loadData();
+  }, []);
+
+  const filteredData = userData.filter(item => {
     const query = searchQuery.toLowerCase();
     return (
       item.nama.toLowerCase().includes(query) ||
-      item.tempatTinggal.toLowerCase().includes(query) ||
+      item.alamat.toLowerCase().includes(query) ||
       item.tb.toString().includes(query) ||
+      item.bb.toString().includes(query) ||
       item.umur.toString().includes(query) ||
-      item.jenisKelamin.toString().includes(query) ||
-      item.bb.toString().includes(query)
+      item.jenisKelamin.toLowerCase().includes(query)
     );
   });
 
@@ -33,6 +50,17 @@ const ListData = ({ navigation }) => {
     const endIndex = startIndex + ITEMS_PER_PAGE;
     return filteredData.slice(startIndex, endIndex);
   };
+
+  const renderItem = ({item}) => (
+    <View style={styles.dataRow}>
+      <Text style={styles.dataText}>{item.nama}</Text>
+      <Text style={styles.dataText}>{item.alamat}</Text>
+      <Text style={styles.dataText}>{item.tb}</Text>
+      <Text style={styles.dataText}>{item.bb}</Text>
+      <Text style={styles.dataText}>{item.umur}</Text>
+      <Text style={styles.dataText}>{item.jenisKelamin}</Text>
+    </View>
+  );
 
   const goToPreviousPage = () => {
     if (currentPage > 1) {
@@ -58,17 +86,6 @@ const ListData = ({ navigation }) => {
     </View>
   );
 
-  const renderItem = ({ item }) => (
-    <View style={styles.dataRow}>
-      <Text style={styles.dataText}>{item.nama}</Text>
-      <Text style={styles.dataText}>{item.tempatTinggal}</Text>
-      <Text style={styles.dataText}>{item.tb}</Text>
-      <Text style={styles.dataText}>{item.bb}</Text>
-      <Text style={styles.dataText}>{item.umur}</Text>
-      <Text style={styles.dataText}>{item.jenisKelamin}</Text>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -80,7 +97,6 @@ const ListData = ({ navigation }) => {
           <Icon name="search" size={24} color="#4A90E2" />
         </TouchableOpacity>
       </View>
-
 
       {searchVisible && (
         <TextInput
@@ -95,7 +111,7 @@ const ListData = ({ navigation }) => {
       <FlatList
         data={getPaginatedData()}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         style={styles.list}
       />
 
@@ -103,18 +119,18 @@ const ListData = ({ navigation }) => {
         <TouchableOpacity
           onPress={goToPreviousPage}
           disabled={currentPage === 1}
-          style={styles.arrowButton}
-        >
+          style={styles.arrowButton}>
           <Text style={styles.arrowText}>←</Text>
         </TouchableOpacity>
 
-        <Text style={styles.pageText}>Page {currentPage} of {totalPages}</Text>
+        <Text style={styles.pageText}>
+          Page {currentPage} of {totalPages}
+        </Text>
 
         <TouchableOpacity
           onPress={goToNextPage}
           disabled={currentPage === totalPages}
-          style={styles.arrowButton}
-        >
+          style={styles.arrowButton}>
           <Text style={styles.arrowText}>→</Text>
         </TouchableOpacity>
       </View>
