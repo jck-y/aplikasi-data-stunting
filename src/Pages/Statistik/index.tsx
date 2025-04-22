@@ -79,7 +79,7 @@ const Statistik = () => {
           translateY: 5,
       },
           }}
-          bezier
+          // bezier
           style={{
           marginVertical: 8,
           borderRadius: 8,
