@@ -9,6 +9,8 @@ export const registerUser = async (userData: {
   beratBadan: string;
   umur: string;
   jenisKelamin: string;
+  latitude: string;
+  longitude: string;
 }) => {
   try {
     // Menyimpan data ke koleksi 'users' di Firestore
@@ -23,6 +25,8 @@ export const registerUser = async (userData: {
         umur: parseInt(userData.umur), // Konversi ke number
         jenisKelamin: userData.jenisKelamin,
         createdAt: firestore.FieldValue.serverTimestamp(), // Timestamp saat data dibuat
+        latitude: userData.latitude,
+        longitude: userData.longitude,
       });
     return {success: true, message: 'Data berhasil disimpan ke Firestore!'};
   } catch (error) {

@@ -13,6 +13,8 @@ export const fetchUserData = async () => {
         bb: data.beratBadan,
         umur: data.umur,
         jenisKelamin: data.jenisKelamin,
+        longitude: data.longitude,
+        latitude: data.latitude,
       };
     });
     return usersData;

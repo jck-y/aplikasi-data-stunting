@@ -7,6 +7,7 @@ import {fetchUsers} from '../../Api/getCoordinates';
 
 const Location = () => {
   const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   // Fetch users on component mount
   useEffect(() => {
@@ -45,12 +46,15 @@ const Location = () => {
               latitude: user.latitude,
               longitude: user.longitude,
             }}
+            image={require('../../Assets/Other/Vector.png')}
+            style={{width: 150, height: 150}}
             title={`${user.namaDepan} ${user.namaBelakang}`}
             description={`Rumah ${user.namaDepan}`}
+            onPress={() => setSelectedUser(user)}
           />
         ))}
       </MapView>
-      <Status />
+      {selectedUser && <Status user={selectedUser} />}
     </View>
   );
 };
@@ -59,16 +63,16 @@ export default Location;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Container takes full screen height
-    alignItems: 'center', // Center content horizontally
-    backgroundColor: '#F5F5F5', // Optional: light background for visibility
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
   },
   container1: {
     width: '100%',
     borderBottomWidth: 2,
     borderBottomColor: '#E9EAEB',
     paddingVertical: 10,
-    backgroundColor: '#FFFFFF', // Ensure header is visible
+    backgroundColor: '#FFFFFF',
   },
   title: {
     fontSize: 24,
@@ -77,11 +81,11 @@ const styles = StyleSheet.create({
     color: '#0077B6',
   },
   map: {
-    width: 350, // Fixed width for map box
-    height: 300, // Fixed height for map box
-    marginVertical: 10, // Space above and below map
-    borderRadius: 10, // Optional: rounded corners for box look
-    borderWidth: 1, // Optional: border for visibility
+    width: 350,
+    height: 300,
+    marginVertical: 10,
+    borderRadius: 10,
+    borderWidth: 1,
     borderColor: '#E9EAEB',
   },
 });

@@ -11,6 +11,7 @@ import {
 import {V, X} from '../../Assets';
 import {Gap} from '../../Component';
 import {registerUser} from '../../Api/register'; // Impor fungsi registerUser
+import { set } from '@react-native-firebase/database';
 
 const InputData = () => {
   const [namaDepan, setNamaDepan] = useState('');
@@ -22,6 +23,8 @@ const InputData = () => {
   const [jenisKelamin, setJenisKelamin] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
 
   const isFormFilled = () => {
     return (
@@ -31,7 +34,9 @@ const InputData = () => {
       tinggiBadan.trim() !== '' &&
       beratBadan.trim() !== '' &&
       umur.trim() !== '' &&
-      jenisKelamin.trim() !== ''
+      jenisKelamin.trim() !== '' &&
+      latitude.trim() !== '' &&
+      longitude.trim() !== ''
     );
   };
 
@@ -48,6 +53,8 @@ const InputData = () => {
           beratBadan,
           umur,
           jenisKelamin,
+          latitude,
+          longitude,
         };
 
         // Panggil fungsi registerUser untuk menyimpan data
@@ -72,6 +79,8 @@ const InputData = () => {
           setBeratBadan('');
           setUmur('');
           setJenisKelamin('');
+          setLatitude('');
+          setLongitude('');
         }
       }, 1500);
     }
@@ -79,12 +88,12 @@ const InputData = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Masukan Data</Text>
+      <Text style={styles.title}>Masukkan Data</Text>
       <Text>Nama Depan</Text>
       <Gap height={8} />
       <TextInput
         style={styles.input}
-        placeholder="masukan nama depan"
+        placeholder="Masukkan nama depan"
         value={namaDepan}
         onChangeText={setNamaDepan}
       />
@@ -92,7 +101,7 @@ const InputData = () => {
       <Gap height={8} />
       <TextInput
         style={styles.input}
-        placeholder="masukan marga"
+        placeholder="Masukkan marga"
         value={namaBelakang}
         onChangeText={setNamaBelakang}
       />
@@ -100,7 +109,7 @@ const InputData = () => {
       <Gap height={8} />
       <TextInput
         style={styles.input}
-        placeholder="masukan lokasi tempat tinggal"
+        placeholder="Masukkan lokasi tempat tinggal"
         value={tempatTinggal}
         onChangeText={setTempatTinggal}
       />
@@ -108,7 +117,7 @@ const InputData = () => {
       <Gap height={8} />
       <TextInput
         style={styles.input}
-        placeholder="masukan tinggi badan"
+        placeholder="Masukkan tinggi badan"
         value={tinggiBadan}
         onChangeText={setTinggiBadan}
         keyboardType="numeric"
@@ -117,7 +126,7 @@ const InputData = () => {
       <Gap height={8} />
       <TextInput
         style={styles.input}
-        placeholder="masukan berat badan"
+        placeholder="Masukkan berat badan"
         value={beratBadan}
         onChangeText={setBeratBadan}
         keyboardType="numeric"
@@ -126,7 +135,7 @@ const InputData = () => {
       <Gap height={8} />
       <TextInput
         style={styles.input}
-        placeholder="masukan usia"
+        placeholder="Masukkan usia"
         value={umur}
         onChangeText={setUmur}
         keyboardType="numeric"
@@ -135,9 +144,25 @@ const InputData = () => {
       <Gap height={8} />
       <TextInput
         style={styles.input}
-        placeholder="masukan jenis kelamin anda"
+        placeholder="Masukkan jenis kelamin anda"
         value={jenisKelamin}
         onChangeText={setJenisKelamin}
+      />
+      <Text>Latitude</Text>
+      <Gap height={8} />
+      <TextInput
+        style={styles.input}
+        placeholder="Masukkan koordinat kiri"
+        value={latitude}
+        onChangeText={setLatitude}
+      />
+      <Text>Longitude</Text>
+      <Gap height={8} />
+      <TextInput
+        style={styles.input}
+        placeholder="Masukkan koordinat kanan"
+        value={longitude}
+        onChangeText={setLongitude}
       />
       <TouchableOpacity
         style={[
@@ -148,7 +173,7 @@ const InputData = () => {
         disabled={!isFormFilled()}>
         <Text style={styles.buttonText}>Masukan Data</Text>
       </TouchableOpacity>
-
+      <Gap height={30} />
       <Modal
         animationType="fade"
         transparent={true}

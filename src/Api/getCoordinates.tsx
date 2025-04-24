@@ -11,6 +11,10 @@ export const fetchUsers = async () => {
       namaBelakang: doc.data().namaBelakang,
       latitude: parseFloat(doc.data().latitude), // Konversi ke number
       longitude: parseFloat(doc.data().longitude), // Konversi ke number
+      beratBadan: parseFloat(doc.data().beratBadan), // Konversi ke number
+      tinggiBadan: parseFloat(doc.data().tinggiBadan), // Konversi ke number
+      jenisKelamin: doc.data().jenisKelamin, // String
+      umur: parseInt(doc.data().umur, 10), // Konversi ke number
     }));
 
     return {
