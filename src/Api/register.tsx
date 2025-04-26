@@ -1,4 +1,27 @@
 import firestore from '@react-native-firebase/firestore';
+import axios from 'axios';
+
+// Fungsi untuk mengubah koordinat menjadi alamat menggunakan Google Maps Geocoding API
+const getAddressFromCoordinates = async (
+  latitude: string,
+  longitude: string,
+): Promise<string> => {
+  try {
+    const apiKey = 'AIzaSyBSUsuZy3LChLHnJJvGwJpQv2SxShqwSe0'; // Ganti dengan API Key Anda atau gunakan .env
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`,
+    );
+
+    if (response.data.status === 'OK' && response.data.results.length > 0) {
+      return response.data.results[0].formatted_address;
+    } else {
+      return 'Alamat tidak ditemukan';
+    }
+  } catch (error) {
+    console.error('Error mengambil alamat dari Geocoding API:', error);
+    return 'Gagal mengambil alamat';
+  }
+};
 
 // Fungsi untuk menyimpan data ke Firestore
 export const registerUser = async (userData: {
@@ -13,6 +36,12 @@ export const registerUser = async (userData: {
   longitude: string;
 }) => {
   try {
+    // Mengambil alamat dari koordinat
+    const address = await getAddressFromCoordinates(
+      userData.latitude,
+      userData.longitude,
+    );
+
     // Menyimpan data ke koleksi 'users' di Firestore
     await firestore()
       .collection('users')
@@ -24,10 +53,12 @@ export const registerUser = async (userData: {
         beratBadan: parseFloat(userData.beratBadan), // Konversi ke number
         umur: parseInt(userData.umur), // Konversi ke number
         jenisKelamin: userData.jenisKelamin,
-        createdAt: firestore.FieldValue.serverTimestamp(), // Timestamp saat data dibuat
         latitude: userData.latitude,
         longitude: userData.longitude,
+        address: address, // Menambahkan field address
+        createdAt: firestore.FieldValue.serverTimestamp(), // Timestamp saat data dibuat
       });
+
     return {success: true, message: 'Data berhasil disimpan ke Firestore!'};
   } catch (error) {
     console.error('Error menyimpan data ke Firestore:', error);

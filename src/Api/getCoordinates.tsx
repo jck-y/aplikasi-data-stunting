@@ -11,6 +11,7 @@ export const fetchUsers = async () => {
       namaBelakang: doc.data().namaBelakang,
       latitude: parseFloat(doc.data().latitude), // Konversi ke number
       longitude: parseFloat(doc.data().longitude), // Konversi ke number
+      address: doc.data().address || 'Alamat tidak tersedia', // Ambil address dari Firestore
       beratBadan: parseFloat(doc.data().beratBadan), // Konversi ke number
       tinggiBadan: parseFloat(doc.data().tinggiBadan), // Konversi ke number
       jenisKelamin: doc.data().jenisKelamin, // String

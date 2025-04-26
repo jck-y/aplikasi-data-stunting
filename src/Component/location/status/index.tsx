@@ -16,7 +16,7 @@ const Status = ({user}) => {
       </View>
       <View style={styles.container1}>
         <Text style={styles.title}>Alamat :</Text>
-        <Text style={styles.text}>{`${user.latitude}, ${user.longitude}`}</Text>
+        <Text style={styles.text}>{user.address || 'Memuat alamat...'}</Text>
       </View>
       <View style={styles.container1}>
         <Text style={styles.title}>Tinggi :</Text>
@@ -52,8 +52,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignSelf: 'center',
     borderRadius: 5,
-    boxShadow: '2px 1px 4px 4px rgba(230, 14, 18, 0.25)',
     paddingVertical: 10,
+    // Shadow for iOS
+    shadowColor: '#E60E12',
+    shadowOffset: {width: 2, height: 1},
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    // Shadow for Android
+    elevation: 5,
   },
   title: {
     fontSize: 10,
@@ -62,7 +68,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 10,
     width: 160,
-    left: 6,
+    marginLeft: 6, // Changed from left to marginLeft for better layout
   },
   container1: {
     flexDirection: 'row',
@@ -73,12 +79,12 @@ const styles = StyleSheet.create({
     color: '#E60E12',
     fontSize: 10,
     width: 160,
-    left: 6,
+    marginLeft: 6,
     fontWeight: 'bold',
   },
   container2: {
     position: 'absolute',
-    left: 280,
+    left: 280, // Ensure this fits within the parent container (width: 345)
     top: 16,
   },
   userimage: {

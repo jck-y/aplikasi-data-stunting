@@ -47,7 +47,6 @@ const Location = () => {
               longitude: user.longitude,
             }}
             image={require('../../Assets/Other/Vector.png')}
-            style={{width: 150, height: 150}}
             title={`${user.namaDepan} ${user.namaBelakang}`}
             description={`Rumah ${user.namaDepan}`}
             onPress={() => setSelectedUser(user)}
