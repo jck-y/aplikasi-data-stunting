@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   ScrollView,
   Text,
@@ -8,15 +8,33 @@ import {
   Modal,
   View,
 } from 'react-native';
-import {V, X} from '../../Assets';
-import {Gap} from '../../Component';
-import {registerUser} from '../../Api/register'; // Impor fungsi registerUser
-import { set } from '@react-native-firebase/database';
+import { V, X } from '../../Assets';
+import { Gap } from '../../Component';
+import { registerUser } from '../../Api/register';
+import { Dropdown } from 'react-native-element-dropdown';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import { useNavigation } from '@react-navigation/native';
+
+const jenisKelaminData = [
+  { label: 'Laki-laki', value: 'Laki-laki' },
+  { label: 'Perempuan', value: 'Perempuan' },
+];
+
+const daerahData = [
+  { label: 'Airmadidi', value: 'Airmadidi' },
+  { label: 'Kalawat', value: 'Kalawat' },
+  { label: 'Dimembe', value: 'Dimembe' },
+  { label: 'Kauditan', value: 'Kauditan' },
+  { label: 'Kema', value: 'Kema' },
+  { label: 'Likupang', value: 'Likupang' },
+];
 
 const InputData = () => {
+  const navigation = useNavigation();
   const [namaDepan, setNamaDepan] = useState('');
   const [namaBelakang, setNamaBelakang] = useState('');
-  const [tempatTinggal, setTempatTinggal] = useState('');
+  const [alamat, setAlamat] = useState('');
+  const [daerah, setDaerah] = useState('');
   const [tinggiBadan, setTinggiBadan] = useState('');
   const [beratBadan, setBeratBadan] = useState('');
   const [umur, setUmur] = useState('');
@@ -30,7 +48,8 @@ const InputData = () => {
     return (
       namaDepan.trim() !== '' &&
       namaBelakang.trim() !== '' &&
-      tempatTinggal.trim() !== '' &&
+      alamat.trim() !== '' &&
+      daerah.trim() !== '' &&
       tinggiBadan.trim() !== '' &&
       beratBadan.trim() !== '' &&
       umur.trim() !== '' &&
@@ -40,28 +59,51 @@ const InputData = () => {
     );
   };
 
+  const handleNumericInput = (text, setter) => {
+    const numericValue = text.replace(/[^0-9.-]/g, '') || '';
+    setter(numericValue);
+  };
+
   const handleSubmit = async () => {
     if (isFormFilled()) {
-      const umurNum = parseInt(umur);
-      if (!isNaN(umurNum) && umurNum > 0) {
-        // Membuat objek data untuk dikirim ke Firestore
+      const umurNum = parseFloat(umur);
+      const tinggiNum = parseFloat(tinggiBadan);
+      const beratNum = parseFloat(beratBadan);
+      const latNum = parseFloat(latitude);
+      const longNum = parseFloat(longitude);
+
+      if (
+        !isNaN(umurNum) &&
+        umurNum > 0 &&
+        !isNaN(tinggiNum) &&
+        tinggiNum > 0 &&
+        !isNaN(beratNum) &&
+        beratNum > 0 &&
+        !isNaN(latNum) &&
+        !isNaN(longNum)
+      ) {
         const userData = {
           namaDepan,
           namaBelakang,
-          tempatTinggal,
-          tinggiBadan,
-          beratBadan,
-          umur,
+          tempatTinggal: alamat, // Match the field name expected by registerUser
+          daerah, // Include daerah field
+          tinggiBadan, // Keep as string, registerUser will parse it
+          beratBadan, // Keep as string, registerUser will parse it
+          umur, // Keep as string, registerUser will parse it
           jenisKelamin,
-          latitude,
-          longitude,
+          latitude, // Keep as string, registerUser expects string
+          longitude, // Keep as string, registerUser expects string
         };
 
-        // Panggil fungsi registerUser untuk menyimpan data
-        const result = await registerUser(userData);
+        console.log('Saving userData:', userData); // Debug log
 
-        // Set status keberhasilan berdasarkan respons dari Firestore
-        setIsSuccess(result.success);
+        try {
+          const result = await registerUser(userData);
+          setIsSuccess(result.success);
+        } catch (error) {
+          console.error('Error in handleSubmit:', error);
+          setIsSuccess(false);
+        }
       } else {
         setIsSuccess(false);
       }
@@ -70,17 +112,18 @@ const InputData = () => {
 
       setTimeout(() => {
         setModalVisible(false);
-        // Reset form setelah berhasil menyimpan (opsional)
         if (isSuccess) {
           setNamaDepan('');
           setNamaBelakang('');
-          setTempatTinggal('');
+          setAlamat('');
+          setDaerah('');
           setTinggiBadan('');
           setBeratBadan('');
           setUmur('');
           setJenisKelamin('');
           setLatitude('');
           setLongitude('');
+          navigation.navigate('Home');
         }
       }, 1500);
     }
@@ -105,48 +148,74 @@ const InputData = () => {
         value={namaBelakang}
         onChangeText={setNamaBelakang}
       />
-      <Text>Tempat Tinggal</Text>
+      <Text>Alamat</Text>
       <Gap height={8} />
       <TextInput
         style={styles.input}
-        placeholder="Masukkan lokasi tempat tinggal"
-        value={tempatTinggal}
-        onChangeText={setTempatTinggal}
+        placeholder="Masukkan alamat lengkap"
+        value={alamat}
+        onChangeText={setAlamat}
+      />
+      <Text>Daerah</Text>
+      <Gap height={8} />
+      <Dropdown
+        style={styles.dropdown}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        data={daerahData}
+        maxHeight={200}
+        labelField="label"
+        valueField="value"
+        placeholder="Pilih daerah"
+        value={daerah}
+        onChange={item => setDaerah(item.value)}
+        renderRightIcon={() => (
+          <AntDesign style={styles.icon} color="#A9A9A9" name="down" size={18} />
+        )}
       />
       <Text>Tinggi Badan</Text>
       <Gap height={8} />
       <TextInput
         style={styles.input}
-        placeholder="Masukkan tinggi badan"
+        placeholder="Masukkan tinggi badan (cm)"
         value={tinggiBadan}
-        onChangeText={setTinggiBadan}
+        onChangeText={text => handleNumericInput(text, setTinggiBadan)}
         keyboardType="numeric"
       />
       <Text>Berat Badan</Text>
       <Gap height={8} />
       <TextInput
         style={styles.input}
-        placeholder="Masukkan berat badan"
+        placeholder="Masukkan berat badan (kg)"
         value={beratBadan}
-        onChangeText={setBeratBadan}
+        onChangeText={text => handleNumericInput(text, setBeratBadan)}
         keyboardType="numeric"
       />
       <Text>Umur</Text>
       <Gap height={8} />
       <TextInput
         style={styles.input}
-        placeholder="Masukkan usia"
+        placeholder="Masukkan usia (tahun)"
         value={umur}
-        onChangeText={setUmur}
+        onChangeText={text => handleNumericInput(text, setUmur)}
         keyboardType="numeric"
       />
       <Text>Jenis Kelamin</Text>
       <Gap height={8} />
-      <TextInput
-        style={styles.input}
-        placeholder="Masukkan jenis kelamin anda"
+      <Dropdown
+        style={styles.dropdown}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        data={jenisKelaminData}
+        maxHeight={200}
+        labelField="label"
+        valueField="value"
+        placeholder="Pilih jenis kelamin"
         value={jenisKelamin}
-        onChangeText={setJenisKelamin}
+        onChange={item => setJenisKelamin(item.value)}
+        renderRightIcon={() => (
+          <AntDesign style={styles.icon} color="#A9A9A9" name="down" size={18} />
+        )}
       />
       <Text>Latitude</Text>
       <Gap height={8} />
@@ -154,7 +223,11 @@ const InputData = () => {
         style={styles.input}
         placeholder="Masukkan koordinat kiri"
         value={latitude}
-        onChangeText={setLatitude}
+        onChangeText={text => handleNumericInput(text, setLatitude)}
+        keyboardType="numeric"
+        autoCapitalize="none"
+        autoCorrect={false}
+        returnKeyType="done"
       />
       <Text>Longitude</Text>
       <Gap height={8} />
@@ -162,12 +235,16 @@ const InputData = () => {
         style={styles.input}
         placeholder="Masukkan koordinat kanan"
         value={longitude}
-        onChangeText={setLongitude}
+        onChangeText={text => handleNumericInput(text, setLongitude)}
+        keyboardType="numeric"
+        autoCapitalize="none"
+        autoCorrect={false}
+        returnKeyType="done"
       />
       <TouchableOpacity
         style={[
           styles.button,
-          {backgroundColor: isFormFilled() ? '#0077B6' : '#D3D3D3'},
+          { backgroundColor: isFormFilled() ? '#0077B6' : '#D3D3D3' },
         ]}
         onPress={handleSubmit}
         disabled={!isFormFilled()}>
@@ -220,6 +297,25 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 16,
     color: '#333',
+  },
+  dropdown: {
+    backgroundColor: '#E8ECEF',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+    fontSize: 16,
+    color: '#333',
+  },
+  placeholderStyle: {
+    fontSize: 16,
+    color: '#A9A9A9',
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+    color: '#333',
+  },
+  icon: {
+    marginRight: 10,
   },
   button: {
     paddingVertical: 15,

@@ -7,17 +7,70 @@ import {
   StyleSheet, 
   SafeAreaView,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { auth, db } from '../../../config/firebase'; // Adjust the path to your Firebase config
 
 const Login = ({ navigation }) => {
-  const [email, setEmail] = useState('example@example.com');
+  const [email, setEmail] = useState('@gmail.com');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Harap masukkan email dan kata sandi.');
+      return;
+    }
+  
+    setLoading(true);
+    try {
+      // Sign in with email and password
+      const userCredential = await auth.signInWithEmailAndPassword(email, password);
+      const user = userCredential.user;
+      console.log('Authenticated user UID:', user.uid);
+  
+      // Fetch the user's role from the 'roles' collection
+      const roleDoc = await db.collection('roles').doc(user.uid).get();
+      if (!roleDoc.exists) {
+        throw new Error('Peran pengguna tidak ditemukan di database.');
+      }
+  
+      const roleData = roleDoc.data();
+      const role = roleData.roles ? roleData.roles.toLowerCase() : null; // Normalize to lowercase
+      console.log('Fetched role data:', roleData);
+      console.log('Role value:', role);
+  
+      // Validate role
+      const validRoles = ['pemerintah', 'posyandu', 'puskesmas', 'admin'];
+      if (!role || !validRoles.includes(role)) {
+        throw new Error(`Peran pengguna tidak valid: ${role || 'tidak ada peran'}`);
+      }
+  
+      // Navigate to Home screen with the role
+      navigation.replace('Home', { userRole: role });
+    } catch (error) {
+      console.error('Error during login:', error);
+      let errorMessage = 'Terjadi kesalahan saat masuk. Silakan coba lagi.';
+      if (error.code === 'auth/wrong-password') {
+        errorMessage = 'Kata sandi salah.';
+      } else if (error.code === 'auth/user-not-found') {
+        errorMessage = 'Pengguna tidak ditemukan.';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Format email tidak valid.';
+      } else {
+        errorMessage = error.message; // Show the specific error message
+      }
+      Alert.alert('Error', errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -35,7 +88,7 @@ const Login = ({ navigation }) => {
         <View style={styles.content}>
           <Text style={styles.welcomeTitle}>Selamat Datang</Text>
           <Text style={styles.welcomeDescription}>
-          Masuk untuk mengelola dan memantau data stunting secara real-time. Aplikasi ini hanya dapat diakses oleh pengguna terdaftar: Pemerintah, Posyandu, Puskesmas, dan Admin
+            Masuk untuk mengelola dan memantau data stunting secara real-time. Aplikasi ini hanya dapat diakses oleh pengguna terdaftar: Pemerintah, Posyandu, Puskesmas, dan Admin
           </Text>
           <View style={styles.formContainer}>
             <Text style={styles.inputLabel}>Alamat Email</Text>
@@ -45,6 +98,7 @@ const Login = ({ navigation }) => {
               onChangeText={setEmail}
               keyboardType="email-address"
               autoCapitalize="none"
+              editable={!loading}
             />
 
             <Text style={styles.inputLabel}>Kata Sandi</Text>
@@ -55,27 +109,31 @@ const Login = ({ navigation }) => {
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
+                editable={!loading}
               />
               <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIcon}>
                 <Icon name={showPassword ? "eye" : "eye-off"} size={20} color="#999" />
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.forgotPassword}>
+            {/* <TouchableOpacity style={styles.forgotPassword}>
               <Text style={styles.forgotPasswordText}>Lupa Password?</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <TouchableOpacity 
-            style={styles.loginButton}
-            onPress={() => navigation.navigate('Home')}
+            style={[styles.loginButton, loading && styles.loginButtonDisabled]}
+            onPress={handleLogin}
+            disabled={loading}
           >
-            <Text style={styles.loginButtonText}>Masuk</Text>
+            <Text style={styles.loginButtonText}>
+              {loading ? 'Memuat...' : 'Masuk'}
+            </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.fingerprintButton}>
+          {/* <TouchableOpacity style={styles.fingerprintButton} disabled={loading}>
             <View style={styles.fingerprintCircle}>
               <Icon name="finger-print-outline" size={32} color="#0099CC" />
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -171,6 +229,9 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     alignItems: 'center',
     marginBottom: 32,
+  },
+  loginButtonDisabled: {
+    backgroundColor: '#A9CCE3',
   },
   loginButtonText: {
     color: 'white',
