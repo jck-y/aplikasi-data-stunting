@@ -48,7 +48,7 @@ const Login = ({ navigation }) => {
       console.log('Role value:', role);
   
       // Validate role
-      const validRoles = ['pemerintah', 'posyandu', 'puskesmas', 'admin'];
+      const validRoles = ['pemerintah', 'posyandu', 'puskesmas', 'admin', 'kader'];
       if (!role || !validRoles.includes(role)) {
         throw new Error(`Peran pengguna tidak valid: ${role || 'tidak ada peran'}`);
       }
@@ -88,7 +88,7 @@ const Login = ({ navigation }) => {
         <View style={styles.content}>
           <Text style={styles.welcomeTitle}>Selamat Datang</Text>
           <Text style={styles.welcomeDescription}>
-            Masuk untuk mengelola dan memantau data stunting secara real-time. Aplikasi ini hanya dapat diakses oleh pengguna terdaftar: Pemerintah, Posyandu, Puskesmas, dan Admin
+            Masuk untuk mengelola dan memantau data stunting secara real-time. Aplikasi ini hanya dapat diakses oleh pengguna terdaftar: Pemerintah, Posyandu, Puskesmas, Kader, dan Admin
           </Text>
           <View style={styles.formContainer}>
             <Text style={styles.inputLabel}>Alamat Email</Text>
