@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,85 +6,235 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {fetchUserData} from '../../Api/showData';
+import { db } from '../../../config/firebase'; 
 
-// const dummyData = [
-//   { id: '1', nama: 'Rhye, Olivia', tempatTinggal: 'Sukur, kec Airmadidi', tb: 178, bb: 56, umur: 18, jenisKelamin: 'L' },
-//   { id: '2', nama: 'Soen, Albert Kuantino', tempatTinggal: 'Tetey, kec Dimembe', tb: 160, bb: 65, umur: 20, jenisKelamin: 'P' },
-// ];
+const ITEMS_PER_PAGE = 100; 
 
-const ITEMS_PER_PAGE = 15; // Jumlah item per halaman
-
-const ListData = ({navigation}) => {
-  const [currentPage, setCurrentPage] = useState(1);
+const MiniListData = ({ navigation }) => {
+  const [currentPage, setCurrentPage] = useState({
+    Balita: 1,
+    IbuBalita: 1,
+    IbuHamil: 1,
+    RemajaCatin: 1,
+  });
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [userData, setUserData] = useState([]);
 
+  // Fetch data dari Firestore secara real-time
   useEffect(() => {
-    const loadData = async () => {
-      const data = await fetchUserData();
-      setUserData(data);
-    };
-    loadData();
+    const unsubscribe = db.collection('users').onSnapshot(
+      snapshot => {
+        const usersData = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          usersData.push({
+            id: doc.id,
+            ...data,
+            kategori: data.kategori || 'Tidak diketahui',
+          });
+        });
+        setUserData(usersData);
+      },
+      error => {
+        console.error('Error fetching users in MiniListData:', error);
+      }
+    );
+
+    return () => unsubscribe();
   }, []);
 
-  const filteredData = userData.filter(item => {
-    const query = searchQuery.toLowerCase();
-    return (
-      item.nama.toLowerCase().includes(query) ||
-      item.alamat.toLowerCase().includes(query) ||
-      item.tb.toString().includes(query) ||
-      item.bb.toString().includes(query) ||
-      item.umur.toString().includes(query) ||
-      item.jenisKelamin.toLowerCase().includes(query)
-    );
-  });
+  // Pisahkan data berdasarkan kategori
+  const getDataByCategory = (category) => {
+    return userData.filter(item => item.kategori === category);
+  };
 
-  const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
+  // Filter data berdasarkan search query
+  const filterData = (data) => {
+    if (searchQuery.trim() === '') return data;
+    const queryLower = searchQuery.toLowerCase();
+    return data.filter(item => {
+      let name = '';
+      let age = '';
+      let weight = '';
+      let height = '';
+      switch (item.kategori) {
+        case 'Balita':
+        case 'Ibu Balita':
+          name = item.namaBalita || '';
+          age = item.kategori === 'Balita' ? item.usiaBulan : item.usiaIbu || '';
+          weight = item.kategori === 'Balita' ? item.beratBadan : item.beratLahir || '';
+          height = item.kategori === 'Balita' ? item.panjangTinggi : item.panjangLahir || '';
+          break;
+        case 'Ibu Hamil':
+          name = item.namaIbu || '';
+          age = item.usiaIbu || '';
+          weight = item.beratBadan || '';
+          height = item.tinggiBadan || '';
+          break;
+        case 'Remaja/Catin':
+          name = item.nama || '';
+          age = item.usia || '';
+          weight = item.beratBadan || '';
+          height = item.tinggiBadan || '';
+          break;
+        default:
+          return false;
+      }
+      return (
+        name.toLowerCase().includes(queryLower) ||
+        (item.tempatTinggal || '').toLowerCase().includes(queryLower) ||
+        (height || '').toString().includes(queryLower) ||
+        (weight || '').toString().includes(queryLower) ||
+        (age || '').toString().includes(queryLower) ||
+        (item.stuntingRisk || '').toLowerCase().includes(queryLower)
+      );
+    });
+  };
 
-  const getPaginatedData = () => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const getPaginatedData = (data, category) => {
+    const startIndex = (currentPage[category] - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
-    return filteredData.slice(startIndex, endIndex);
+    return filterData(data).slice(startIndex, endIndex);
   };
 
-  const renderItem = ({item}) => (
-    <View style={styles.dataRow}>
-      <Text style={styles.dataText}>{item.nama}</Text>
-      <Text style={styles.dataText}>{item.alamat}</Text>
-      <Text style={styles.dataText}>{item.tb}</Text>
-      <Text style={styles.dataText}>{item.bb}</Text>
-      <Text style={styles.dataText}>{item.umur}</Text>
-      <Text style={styles.dataText}>{item.jenisKelamin}</Text>
-    </View>
-  );
-
-  const goToPreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+  const renderItem = ({ item }) => {
+    let name = '';
+    let age = '';
+    let weight = '';
+    let height = '';
+    switch (item.kategori) {
+      case 'Balita':
+        name = item.namaBalita || 'Tidak diketahui';
+        age = item.usiaBulan || 'Tidak diketahui';
+        weight = item.beratBadan || 'Tidak diketahui';
+        height = item.panjangTinggi || 'Tidak diketahui';
+        break;
+      case 'Ibu Balita':
+        name = item.namaBalita || 'Tidak diketahui';
+        age = item.usiaIbu || 'Tidak diketahui';
+        weight = item.beratLahir || 'Tidak diketahui';
+        height = item.panjangLahir || 'Tidak diketahui';
+        break;
+      case 'Ibu Hamil':
+        name = item.namaIbu || 'Tidak diketahui';
+        age = item.usiaIbu || 'Tidak diketahui';
+        weight = item.beratBadan || 'Tidak diketahui';
+        height = item.tinggiBadan || 'Tidak diketahui';
+        break;
+      case 'Remaja/Catin':
+        name = item.nama || 'Tidak diketahui';
+        age = item.usia || 'Tidak diketahui';
+        weight = item.beratBadan || 'Tidak diketahui';
+        height = item.tinggiBadan || 'Tidak diketahui';
+        break;
+      default:
+        name = 'Tidak diketahui';
+        age = 'Tidak diketahui';
+        weight = 'Tidak diketahui';
+        height = 'Tidak diketahui';
     }
-  };
 
-  const goToNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
+    return (
+      <View style={styles.dataRow}>
+        <Text style={styles.dataText}>{name}</Text>
+        <Text style={styles.dataText}>{item.tempatTinggal || 'Tidak diketahui'}</Text>
+        <Text style={styles.dataText}>{height}</Text>
+        <Text style={styles.dataText}>{weight}</Text>
+        <Text style={styles.dataText}>{age}</Text>
+        <Text style={styles.dataText}>{item.stuntingRisk || 'Tidak diketahui'}</Text>
+      </View>
+    );
   };
 
   // Render header tabel
-  const renderHeader = () => (
-    <View style={styles.headerRow}>
-      <Text style={styles.headerText}>Nama</Text>
-      <Text style={styles.headerText}>Tempat Tinggal</Text>
-      <Text style={styles.headerText}>TB</Text>
-      <Text style={styles.headerText}>BB</Text>
-      <Text style={styles.headerText}>Umur</Text>
-      <Text style={styles.headerText}>L/P</Text>
-    </View>
-  );
+  const renderHeader = (category) => {
+    let headers = [];
+    switch (category) {
+      case 'Balita':
+        headers = ['Nama Balita', 'Tempat Tinggal', 'Panjang', 'BB', 'Usia (Bulan)', 'Status'];
+        break;
+      case 'Ibu Balita':
+        headers = ['Nama Balita', 'Tempat Tinggal', 'Panjang Lahir', 'BB Lahir', 'Usia Ibu', 'Status'];
+        break;
+      case 'Ibu Hamil':
+        headers = ['Nama Ibu', 'Tempat Tinggal', 'Tinggi', 'BB', 'Usia Ibu', 'Status'];
+        break;
+      case 'Remaja/Catin':
+        headers = ['Nama', 'Tempat Tinggal', 'Tinggi', 'BB', 'Usia', 'Status'];
+        break;
+      default:
+        headers = ['Nama', 'Tempat Tinggal', 'Tinggi', 'BB', 'Usia', 'Status'];
+    }
+
+    return (
+      <View style={styles.headerRow}>
+        {headers.map((header, index) => (
+          <Text key={index} style={styles.headerText}>{header}</Text>
+        ))}
+      </View>
+    );
+  };
+
+  const renderTable = (category) => {
+    const data = getDataByCategory(category === 'IbuBalita' ? 'Ibu Balita' : category === 'IbuHamil' ? 'Ibu Hamil' : category === 'RemajaCatin' ? 'Remaja/Catin' : category);
+    const totalPages = Math.ceil(filterData(data).length / ITEMS_PER_PAGE);
+
+    const goToPreviousPage = () => {
+      if (currentPage[category] > 1) {
+        setCurrentPage(prev => ({
+          ...prev,
+          [category]: prev[category] - 1,
+        }));
+      }
+    };
+
+    const goToNextPage = () => {
+      if (currentPage[category] < totalPages) {
+        setCurrentPage(prev => ({
+          ...prev,
+          [category]: prev[category] + 1,
+        }));
+      }
+    };
+
+    return (
+      <View style={styles.tableContainer}>
+        <Text style={styles.categoryTitle}>
+          {category === 'IbuBalita' ? 'Ibu Balita' : category === 'IbuHamil' ? 'Ibu Hamil' : category === 'RemajaCatin' ? 'Remaja/Catin' : category}
+        </Text>
+        {renderHeader(category === 'IbuBalita' ? 'Ibu Balita' : category === 'IbuHamil' ? 'Ibu Hamil' : category === 'RemajaCatin' ? 'Remaja/Catin' : category)}
+        <FlatList
+          data={getPaginatedData(data, category)}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+          style={styles.list}
+        />
+        {/* {data.length > 0 && (
+          <View style={styles.paginationContainer}>
+            <TouchableOpacity
+              onPress={goToPreviousPage}
+              disabled={currentPage[category] === 1}
+              style={styles.arrowButton}>
+              <Text style={styles.arrowText}>←</Text>
+            </TouchableOpacity>
+            <Text style={styles.pageText}>
+              Page {currentPage[category]} of {totalPages || 1}
+            </Text>
+            <TouchableOpacity
+              onPress={goToNextPage}
+              disabled={currentPage[category] === totalPages}
+              style={styles.arrowButton}>
+              <Text style={styles.arrowText}>→</Text>
+            </TouchableOpacity>
+          </View>
+        )} */}
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -107,33 +257,12 @@ const ListData = ({navigation}) => {
         />
       )}
 
-      {renderHeader()}
-      <FlatList
-        data={getPaginatedData()}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        style={styles.list}
-      />
-
-      <View style={styles.paginationContainer}>
-        <TouchableOpacity
-          onPress={goToPreviousPage}
-          disabled={currentPage === 1}
-          style={styles.arrowButton}>
-          <Text style={styles.arrowText}>←</Text>
-        </TouchableOpacity>
-
-        <Text style={styles.pageText}>
-          Page {currentPage} of {totalPages}
-        </Text>
-
-        <TouchableOpacity
-          onPress={goToNextPage}
-          disabled={currentPage === totalPages}
-          style={styles.arrowButton}>
-          <Text style={styles.arrowText}>→</Text>
-        </TouchableOpacity>
-      </View>
+      <ScrollView>
+        {renderTable('Balita')}
+        {renderTable('IbuBalita')}
+        {renderTable('IbuHamil')}
+        {renderTable('RemajaCatin')}
+      </ScrollView>
     </View>
   );
 };
@@ -168,6 +297,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
+  tableContainer: {
+    marginBottom: 20,
+  },
+  categoryTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 10,
+    marginTop: 10,
+  },
   headerRow: {
     flexDirection: 'row',
     backgroundColor: '#4A90E2',
@@ -179,7 +318,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     textAlign: 'center',
-    fontSize: 14,
+    fontSize: 12,
   },
   dataRow: {
     flexDirection: 'row',
@@ -192,16 +331,16 @@ const styles = StyleSheet.create({
     flex: 1,
     color: '#333',
     textAlign: 'center',
-    fontSize: 14,
+    fontSize: 12,
   },
   list: {
-    flex: 1,
+    flexGrow: 0,
   },
   paginationContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 10,
   },
   arrowButton: {
     padding: 10,
@@ -211,10 +350,10 @@ const styles = StyleSheet.create({
     color: '#4A90E2',
   },
   pageText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#333',
     marginHorizontal: 20,
   },
 });
 
-export default ListData;
+export default MiniListData;

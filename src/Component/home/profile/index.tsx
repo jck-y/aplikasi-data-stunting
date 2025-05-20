@@ -57,8 +57,8 @@ const styles = StyleSheet.create({
     top: 40,
   },
   profile: {
-    width: 50,
-    height: 50,
+    width: 80,
+    height: 80,
     borderRadius: 18.2,
   },
   active: {

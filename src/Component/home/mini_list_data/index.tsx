@@ -14,15 +14,14 @@ const Mini_list_data = ({ navigation }) => {
         const usersData = [];
         snapshot.forEach(doc => {
           const data = doc.data();
-
           let displayAddress = '';
           const fullAddress = data.address || data.tempatTinggal || '';
           if (fullAddress) {
             const addressParts = fullAddress.split(',').map(part => part.trim());
             if (addressParts.length >= 3) {
-              displayAddress = `${addressParts[1]}, ${addressParts[2]}`; // "Airmadidi Bawah, Airmadidi"
+              displayAddress = `${addressParts[1]}, ${addressParts[2]}`; 
             } else {
-              displayAddress = fullAddress; // Fallback to the full address if parsing fails
+              displayAddress = fullAddress; 
             }
           }
 
@@ -52,23 +51,23 @@ const Mini_list_data = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={{ maxHeight: 150 }}>
+      {/* <ScrollView style={{ maxHeight: 150 }}>
         {userList.map((user, index) => (
           <View key={user.id || index} style={styles.container2}>
             <Text style={{ fontSize: 14, fontWeight: "500", lineHeight: 20 }}>{user.nama}</Text>
             <Text style={{ fontSize: 14, fontWeight: "400", lineHeight: 20 }}>{user.alamat}</Text>
           </View>
         ))}
-      </ScrollView>
+      </ScrollView> */}
 
       <View style={styles.container3}>
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
           <Image source={button_left} />
         </TouchableOpacity>
         <Text>Page 1 of 10</Text>
         <TouchableOpacity>
           <Image source={button_right} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
@@ -78,7 +77,7 @@ export default Mini_list_data;
 
 const styles = StyleSheet.create({
   container: {
-    width: 335,
+    width: 300,
     height: maximize.height + 100,
     backgroundColor: "#fff",
     borderRadius: 40,
@@ -89,12 +88,12 @@ const styles = StyleSheet.create({
     elevation: 5,
     position: 'absolute',
     alignSelf: 'center',
-    top: 200,
+    top: "30%",
   },
   container1: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 20,
+    padding: 30,
   },
   container2: {
     paddingHorizontal: 24,

@@ -8,4 +8,5 @@ import Statistik from "./Statistik";
 import Location from "./Location";
 import InputData from "./InputData";
 import ListData from "./ListData";
-export {OnboardingScreen1, OnboardingScreen2, OnboardingScreen3, Splash, Login, Home, Statistik, Location, InputData, ListData}; 
+import Bantuan from "./Bantuan";
+export {Bantuan,OnboardingScreen1, OnboardingScreen2, OnboardingScreen3, Splash, Login, Home, Statistik, Location, InputData, ListData}; 

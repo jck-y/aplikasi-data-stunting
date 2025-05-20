@@ -9,7 +9,8 @@ const Location = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedUser, setSelectedUser] = useState(null); 
+  const [selectedUser, setSelectedUser] = useState(null);
+
   // Fetch users in real-time using onSnapshot
   useEffect(() => {
     const unsubscribe = db.collection('users').onSnapshot(
@@ -17,15 +18,33 @@ const Location = () => {
         const usersData = [];
         snapshot.forEach(doc => {
           const data = doc.data();
+          // Tentukan nama berdasarkan kategori
+          let name = '';
+          switch (data.kategori) {
+            case 'Balita':
+            case 'Ibu Balita':
+              name = data.namaBalita || 'Tidak diketahui';
+              break;
+            case 'Ibu Hamil':
+              name = data.namaIbu || 'Tidak diketahui';
+              break;
+            case 'Remaja/Catin':
+              name = data.nama || 'Tidak diketahui';
+              break;
+            default:
+              name = 'Tidak diketahui';
+          }
+
           usersData.push({
             id: doc.id,
             ...data,
+            name, // Simpan nama untuk pencarian dan marker
             latitude: parseFloat(data.latitude),
             longitude: parseFloat(data.longitude),
           });
         });
         setUsers(usersData);
-        // Initially, set filtered users to all users (or empty if you don't want to show all by default)
+        // Initially, set filtered users to empty
         setFilteredUsers([]);
       },
       error => {
@@ -43,7 +62,7 @@ const Location = () => {
     } else {
       const queryLower = searchQuery.toLowerCase();
       const filtered = users.filter(user => {
-        const fullName = `${user.namaDepan} ${user.namaBelakang}`.toLowerCase();
+        const fullName = user.name.toLowerCase();
         return fullName.includes(queryLower);
       });
       setFilteredUsers(filtered);
@@ -80,23 +99,23 @@ const Location = () => {
               longitude: user.longitude,
             }}
             image={require('../../Assets/Other/Vector.png')}
-            title={`${user.namaDepan} ${user.namaBelakang}`}
-            description={`Rumah ${user.namaDepan}`}
-            onPress={() => setSelectedUser(user)} 
+            title={user.name}
+            description={`Rumah ${user.name}`}
+            onPress={() => setSelectedUser(user)}
           />
         ))}
       </MapView>
-      <View style={styles.statusList}> {/* ➌ */}
-  {selectedUser ? (
-    <Status user={selectedUser} />
-  ) : filteredUsers.length > 0 ? (
-    filteredUsers.map(user => (
-      <Status key={user.id} user={user} />
-    ))
-  ) : searchQuery.trim() !== '' ? (
-    <Text style={styles.noResults}>Tidak ada hasil ditemukan</Text>
-  ) : null}
-</View>
+      <View style={styles.statusList}>
+        {selectedUser ? (
+          <Status user={selectedUser} />
+        ) : filteredUsers.length > 0 ? (
+          filteredUsers.map(user => (
+            <Status key={user.id} user={user} />
+          ))
+        ) : searchQuery.trim() !== '' ? (
+          <Text style={styles.noResults}>Tidak ada hasil ditemukan</Text>
+        ) : null}
+      </View>
       <Gap height={30} />
     </ScrollView>
   );

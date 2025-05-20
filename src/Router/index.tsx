@@ -1,4 +1,4 @@
-import { OnboardingScreen1, OnboardingScreen2, OnboardingScreen3, Splash, Login, Home, Statistik, Location, InputData, ListData } from '../Pages';
+import {Bantuan, OnboardingScreen1, OnboardingScreen2, OnboardingScreen3, Splash, Login, Home, Statistik, Location, InputData, ListData } from '../Pages';
 import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -131,6 +131,11 @@ const Router = ({ initialUser, initialUserRole }) => {
       <Stack.Screen
         name="InputData"
         component={InputData}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Bantuan"
+        component={Bantuan}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
