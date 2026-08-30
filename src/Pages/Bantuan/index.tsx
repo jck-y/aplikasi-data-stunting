@@ -8,7 +8,6 @@ const Bantuan = ({ navigation, route }) => {
   const [bantuanText, setBantuanText] = useState('');
   const userRole = route.params?.userRole || '';
 
-  // Fetch users with stuntingRisk: "Berisiko" in real-time
   useEffect(() => {
     const unsubscribe = db.collection('users')
       .where('stuntingRisk', '==', 'Berisiko')
@@ -48,7 +47,6 @@ const Bantuan = ({ navigation, route }) => {
     return () => unsubscribe();
   }, []);
 
-  // Format the bantuan array into a numbered list
   const formatBantuan = (bantuanArray) => {
     if (!bantuanArray || bantuanArray.length === 0) {
       return 'Belum ada bantuan';
@@ -58,22 +56,18 @@ const Bantuan = ({ navigation, route }) => {
       .join('\n');
   };
 
-  // Handle saving bantuan data
   const handleSaveBantuan = async () => {
     if ((userRole === 'pemerintah' || userRole === 'kader') && selectedUser && bantuanText.trim()) {
       try {
-        // Fetch the current bantuan array, or initialize it as an empty array
         const currentBantuan = selectedUser.bantuan || [];
-        // Append the new bantuan to the array
         const updatedBantuan = [...currentBantuan, bantuanText];
 
-        // Update the Firestore document with the new bantuan array
         await db.collection('users').doc(selectedUser.id).update({
           bantuan: updatedBantuan,
         });
 
-        setBantuanText(''); // Reset input
-        setSelectedUser(null); // Reset selected user
+        setBantuanText('');
+        setSelectedUser(null);
         alert('Bantuan berhasil disimpan!');
       } catch (error) {
         console.error('Error saving bantuan:', error);

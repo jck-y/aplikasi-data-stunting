@@ -70,7 +70,6 @@ const InputData = () => {
   const [stuntingRisk, setStuntingRisk] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Updated state for Balita to include ASI Eksklusif
   const [balitaData, setBalitaData] = useState({
     namaBalita: '', namaOrangtua: '', desaKelurahan: '', jagaLingkungan: '',
     usiaBulan: '', beratBadan: '', panjangTinggi: '', lila: '', lingkarKepala: '',
@@ -120,7 +119,6 @@ const InputData = () => {
         else if (usiaBulan > 24 && usiaBulan <= 60 && beratBadan < 10) riskPoints++;
         if (usiaBulan <= 24 && panjangTinggi < 65) riskPoints++;
         else if (usiaBulan > 24 && usiaBulan <= 60 && panjangTinggi < 80) riskPoints++;
-        // Add risk point if ASI Eksklusif is 'Tidak'
         if (data.asiEksklusif === 'Tidak') riskPoints++;
         break;
       }
@@ -178,7 +176,7 @@ const InputData = () => {
           balitaData.daerah.trim() !== '' &&
           balitaData.latitude.trim() !== '' &&
           balitaData.longitude.trim() !== '' &&
-          balitaData.asiEksklusif.trim() !== '' // Add ASI Eksklusif to form validation
+          balitaData.asiEksklusif.trim() !== ''
         );
         console.log('Is Balita Form Filled:', isBalitaFilled, balitaData);
         return isBalitaFilled;

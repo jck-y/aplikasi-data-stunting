@@ -9,7 +9,7 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const TabNavigator = ({ route }) => {
-  const userRole = route.params?.userRole || 'pemerintah'; // Get userRole from navigation params
+  const userRole = route.params?.userRole || 'pemerintah';
 
   return (
     <Tab.Navigator
@@ -32,7 +32,7 @@ const TabNavigator = ({ route }) => {
       <Tab.Screen
         name="Home"
         component={Home}
-        initialParams={{ userRole }} // Pass userRole to Home
+        initialParams={{ userRole }}
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={{ alignItems: "center" }}>
@@ -110,7 +110,7 @@ const Router = ({ initialUser, initialUserRole }) => {
       <Stack.Screen
         name="Home"
         component={TabNavigator}
-        initialParams={{ userRole: initialUserRole }} // Pass initialUserRole to TabNavigator
+        initialParams={{ userRole: initialUserRole }}
         options={{ headerShown: false }}
       />
       <Stack.Screen

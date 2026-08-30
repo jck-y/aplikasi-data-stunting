@@ -11,7 +11,7 @@ import {
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { auth, db } from '../../../config/firebase'; // Adjust the path to your Firebase config
+import { auth, db } from '../../../config/firebase';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('@gmail.com');
@@ -31,29 +31,25 @@ const Login = ({ navigation }) => {
   
     setLoading(true);
     try {
-      // Sign in with email and password
       const userCredential = await auth.signInWithEmailAndPassword(email, password);
       const user = userCredential.user;
       console.log('Authenticated user UID:', user.uid);
   
-      // Fetch the user's role from the 'roles' collection
       const roleDoc = await db.collection('roles').doc(user.uid).get();
       if (!roleDoc.exists) {
         throw new Error('Peran pengguna tidak ditemukan di database.');
       }
   
       const roleData = roleDoc.data();
-      const role = roleData.roles ? roleData.roles.toLowerCase() : null; // Normalize to lowercase
+      const role = roleData.roles ? roleData.roles.toLowerCase() : null;
       console.log('Fetched role data:', roleData);
       console.log('Role value:', role);
   
-      // Validate role
       const validRoles = ['pemerintah', 'posyandu', 'puskesmas', 'admin', 'kader'];
       if (!role || !validRoles.includes(role)) {
         throw new Error(`Peran pengguna tidak valid: ${role || 'tidak ada peran'}`);
       }
   
-      // Navigate to Home screen with the role
       navigation.replace('Home', { userRole: role });
     } catch (error) {
       console.error('Error during login:', error);
@@ -65,7 +61,7 @@ const Login = ({ navigation }) => {
       } else if (error.code === 'auth/invalid-email') {
         errorMessage = 'Format email tidak valid.';
       } else {
-        errorMessage = error.message; // Show the specific error message
+        errorMessage = error.message;
       }
       Alert.alert('Error', errorMessage);
     } finally {

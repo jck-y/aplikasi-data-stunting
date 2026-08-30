@@ -1,10 +1,9 @@
 import firestore from '@react-native-firebase/firestore';
 import axios from 'axios';
 
-// Fungsi untuk mengubah koordinat menjadi alamat menggunakan Google Maps Geocoding API
 const getAddressFromCoordinates = async (latitude: string, longitude: string): Promise<string> => {
   try {
-    const apiKey = 'AIzaSyBSUsuZy3LChLHnJJvGwJpQv2SxShqwSe0'; // Ganti dengan API Key Anda atau gunakan .env
+    const apiKey = 'AIzaSyBSUsuZy3LChLHnJJvGwJpQv2SxShqwSe0';
     const response = await axios.get(
       `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`,
     );
@@ -20,18 +19,14 @@ const getAddressFromCoordinates = async (latitude: string, longitude: string): P
   }
 };
 
-// Fungsi untuk menyimpan data ke Firestore
 export const registerUser = async (userData: any) => {
   try {
-    // Validasi data dasar
     if (!userData.latitude || !userData.longitude) {
       throw new Error('Koordinat latitude dan longitude wajib diisi');
     }
 
-    // Mengambil alamat dari koordinat
     const address = await getAddressFromCoordinates(userData.latitude, userData.longitude);
 
-    // Struktur data dasar
     const baseData = {
       tempatTinggal: userData.tempatTinggal || 'Tidak diketahui',
       daerah: userData.daerah || 'Tidak diketahui',
@@ -58,7 +53,6 @@ export const registerUser = async (userData: any) => {
           lingkarKepala: parseFloat(userData.lingkarKepala) || 0,
         };
         break;
-      // ... (lakukan hal yang sama untuk kategori lain dengan nilai default)
       case 'Ibu Balita':
         specificData = {
           namaBalita: userData.namaBalita || 'Tidak diketahui',
@@ -78,14 +72,12 @@ export const registerUser = async (userData: any) => {
           intervensi: userData.intervensi || 'Tidak diketahui',
         };
         break;
-      // ... (tambahkan untuk 'Ibu Hamil' dan 'Remaja/Catin' dengan nilai default)
       default:
         throw new Error('Kategori tidak valid');
     }
 
     const dataToSave = { ...baseData, ...specificData };
 
-    // Simpan ke Firestore
     const docRef = await firestore().collection('users').add(dataToSave);
     console.log('Document written with ID: ', docRef.id);
 

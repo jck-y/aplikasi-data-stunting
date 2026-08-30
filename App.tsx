@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import Router from './src/Router/index';
-import { auth, db } from './config/firebase'; // Adjust path to your Firebase config
+import { auth, db } from './config/firebase';
 import { View, Text } from 'react-native';
 
 const App = () => {
@@ -13,7 +13,6 @@ const App = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
       if (currentUser) {
-        // User is signed in
         try {
           const roleDoc = await db.collection('roles').doc(currentUser.uid).get();
           if (roleDoc.exists) {
@@ -31,8 +30,7 @@ const App = () => {
           setUserRole(null);
         }
       } else {
-        // User is signed out
-        setUser(null);
+      setUser(null);
         setUserRole(null);
       }
       setInitializing(false);

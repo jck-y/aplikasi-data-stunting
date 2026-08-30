@@ -24,7 +24,6 @@ const MiniListData = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [userData, setUserData] = useState([]);
 
-  // Fetch data dari Firestore secara real-time
   useEffect(() => {
     const unsubscribe = db.collection('users').onSnapshot(
       snapshot => {
@@ -47,12 +46,10 @@ const MiniListData = ({ navigation }) => {
     return () => unsubscribe();
   }, []);
 
-  // Pisahkan data berdasarkan kategori
   const getDataByCategory = (category) => {
     return userData.filter(item => item.kategori === category);
   };
 
-  // Filter data berdasarkan search query
   const filterData = (data) => {
     if (searchQuery.trim() === '') return data;
     const queryLower = searchQuery.toLowerCase();
@@ -150,7 +147,6 @@ const MiniListData = ({ navigation }) => {
     );
   };
 
-  // Render header tabel
   const renderHeader = (category) => {
     let headers = [];
     switch (category) {

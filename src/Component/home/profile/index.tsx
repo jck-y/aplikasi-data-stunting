@@ -4,7 +4,7 @@
 import React, { useState } from "react";
 import { View, Image, StyleSheet, TouchableOpacity, Text, Pressable, Alert } from "react-native";
 import { active_profile, emilia } from "../../../Assets";
-import { auth } from '../../../../config/firebase'; // Adjust the path to your Firebase config
+import { auth } from '../../../../config/firebase';
 
 const Profile = ({ navigation }) => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -15,9 +15,9 @@ const Profile = ({ navigation }) => {
 
   const handleLogout = async () => {
     try {
-      await auth.signOut(); // Sign out the user
+      await auth.signOut();
       setIsDropdownVisible(false);
-      navigation.replace('Login'); // Navigate to Login screen
+      navigation.replace('Login');
     } catch (error) {
       console.error('Error signing out:', error);
       Alert.alert('Error', 'Gagal keluar. Silakan coba lagi.');

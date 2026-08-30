@@ -17,7 +17,6 @@ const Status = ({ user }) => {
     }
   };
 
-  // Tentukan usia berdasarkan kategori
   const getAge = () => {
     switch (user.kategori) {
       case 'Balita':
@@ -32,7 +31,6 @@ const Status = ({ user }) => {
     }
   };
 
-  // Tentukan berat badan berdasarkan kategori
   const getWeight = () => {
     switch (user.kategori) {
       case 'Balita':
@@ -46,7 +44,6 @@ const Status = ({ user }) => {
     }
   };
 
-  // Tentukan tinggi/panjang badan berdasarkan kategori
   const getHeight = () => {
     switch (user.kategori) {
       case 'Balita':
@@ -61,7 +58,6 @@ const Status = ({ user }) => {
     }
   };
 
-  // Tentukan status bantuan berdasarkan stuntingRisk
   const getStatus = () => {
     return user.stuntingRisk === 'Berisiko' ? 'Memerlukan Bantuan' : 'Tidak Memerlukan Bantuan';
   };
@@ -118,12 +114,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginVertical: 10,
     paddingVertical: 10,
-    // Shadow for iOS
     shadowColor: '#E60E12',
     shadowOffset: { width: 2, height: 1 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    // Shadow for Android
     elevation: 5,
   },
   header: {

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Image, View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { button_left, button_right, maximize } from "../../../Assets";
-import { db } from '../../../../config/firebase'; // Adjust the path to your Firebase config
+import { db } from '../../../../config/firebase';
 
 const Mini_list_data = ({ navigation }) => {
   const [userList, setUserList] = useState([]);

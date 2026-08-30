@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import { db } from '../../../config/firebase'; // Adjust the path to your Firebase config
+import { db } from '../../../config/firebase';
 
 const Statistik = () => {
-  const [chartData, setChartData] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]); // Initialize counts for each region
+  const [chartData, setChartData] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
   const [regionCounts, setRegionCounts] = useState({
     Airmadidi: 0,
     Kalawat: 0,
@@ -19,10 +19,9 @@ const Statistik = () => {
     Wori: 0,
   });
 
-  // Fetch and process Firestore data in real-time (only risky cases)
   useEffect(() => {
     const unsubscribe = db.collection('users')
-      .where('stuntingRisk', '==', 'Berisiko') // Filter only risky cases
+      .where('stuntingRisk', '==', 'Berisiko')
       .onSnapshot(
         snapshot => {
           const counts = {
@@ -41,12 +40,10 @@ const Statistik = () => {
           snapshot.forEach(doc => {
             const userData = doc.data();
 
-            // Use the daerah field if available
             const region = userData.daerah || '';
             if (counts.hasOwnProperty(region)) {
               counts[region]++;
             } else {
-              // Fallback for older documents without daerah field
               const address = userData.address || userData.tempatTinggal || '';
               const addressLower = address.toLowerCase();
               if (addressLower.includes('airmadidi')) {
@@ -73,7 +70,6 @@ const Statistik = () => {
             }
           });
 
-          // Update chart data and region counts
           const updatedChartData = [
             counts.Airmadidi,
             counts.Kalawat,
@@ -94,11 +90,9 @@ const Statistik = () => {
         }
       );
 
-    // Cleanup the listener on unmount
     return () => unsubscribe();
   }, []);
 
-  // Array singkatan untuk label chart
   const shortLabels = [
     'Air',
     'Kal',
@@ -118,7 +112,7 @@ const Statistik = () => {
       <Text style={styles.headline}>Jumlah Kasus Per Kecamatan</Text>
       <LineChart
         data={{
-          labels: shortLabels, // Menggunakan singkatan
+          labels: shortLabels,
           datasets: [
             {
               data: chartData,
@@ -135,9 +129,9 @@ const Statistik = () => {
           color: (opacity = 1) => `white`,
           labelColor: (opacity = 1) => `white`,
           propsForHorizontalLabels: {
-            fontSize: 8, // Mengurangi ukuran font
+            fontSize: 8,
             translateX: -5,
-            rotation: 60, // Meningkatkan rotasi untuk lebih banyak ruang
+            rotation: 60,
           },
           propsForVerticalLabels: {
             fontSize: 10,

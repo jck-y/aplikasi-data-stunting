@@ -59,12 +59,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: '#FFF',
-    // Shadow for iOS
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    // Shadow for Android
     elevation: 5,
   },
 });

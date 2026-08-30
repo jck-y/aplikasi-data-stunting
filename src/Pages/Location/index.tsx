@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Search, Status } from '../../Component/location';
 import { Gap } from '../../Component';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
-import { db } from '../../../config/firebase'; // Adjust the path to your Firebase config
+import { db } from '../../../config/firebase';
 
 const Location = () => {
   const [users, setUsers] = useState([]);
@@ -11,14 +11,12 @@ const Location = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
 
-  // Fetch users in real-time using onSnapshot
   useEffect(() => {
     const unsubscribe = db.collection('users').onSnapshot(
       snapshot => {
         const usersData = [];
         snapshot.forEach(doc => {
           const data = doc.data();
-          // Tentukan nama berdasarkan kategori
           let name = '';
           switch (data.kategori) {
             case 'Balita':
@@ -38,13 +36,12 @@ const Location = () => {
           usersData.push({
             id: doc.id,
             ...data,
-            name, // Simpan nama untuk pencarian dan marker
+            name,
             latitude: parseFloat(data.latitude),
             longitude: parseFloat(data.longitude),
           });
         });
         setUsers(usersData);
-        // Initially, set filtered users to empty
         setFilteredUsers([]);
       },
       error => {
@@ -55,10 +52,9 @@ const Location = () => {
     return () => unsubscribe();
   }, []);
 
-  // Filter users based on search query
   useEffect(() => {
     if (searchQuery.trim() === '') {
-      setFilteredUsers([]); // Don't show any Status components when search query is empty
+      setFilteredUsers([]);
     } else {
       const queryLower = searchQuery.toLowerCase();
       const filtered = users.filter(user => {
@@ -69,7 +65,6 @@ const Location = () => {
     }
   }, [searchQuery, users]);
 
-  // Handle search query from the Search component
   const handleSearch = (query) => {
     setSearchQuery(query);
     setSelectedUser(null);

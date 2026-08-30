@@ -24,10 +24,9 @@ const Home = ({ navigation, route }) => {
   const userRole = route.params?.userRole || '';
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Fetch users and calculate region counts in real-time (only risky cases)
   useEffect(() => {
     const unsubscribe = db.collection('users')
-      .where('stuntingRisk', '==', 'Berisiko') // Filter only risky cases
+      .where('stuntingRisk', '==', 'Berisiko')
       .onSnapshot(
         snapshot => {
           const usersData = [];
@@ -48,7 +47,6 @@ const Home = ({ navigation, route }) => {
             const userData = doc.data();
             usersData.push({ id: doc.id, ...userData });
 
-            // Use the daerah field directly from Firestore
             const region = userData.daerah || '';
             if (counts.hasOwnProperty(region) && region !== '') {
               counts[region]++;
@@ -83,7 +81,6 @@ const Home = ({ navigation, route }) => {
     navigation.navigate('Bantuan', { userRole });
   };
 
-  // Tentukan teks tombol berdasarkan peran
   const getBantuanButtonText = () => {
     return userRole === 'pemerintah' ? 'Masukan Bantuan' : 'Bantuan';
   };
